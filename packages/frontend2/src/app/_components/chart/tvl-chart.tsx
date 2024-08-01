@@ -26,9 +26,15 @@ interface Props {
   data: TvlCharts
   milestones: Milestone[]
   tag?: string
+  headerContent?: 'scaling' | 'bridges'
 }
 
-export function TvlChart({ data, milestones, tag = 'summary' }: Props) {
+export function TvlChart({
+  data,
+  milestones,
+  tag = 'summary',
+  headerContent = 'scaling',
+}: Props) {
   const [timeRange, setTimeRange] = useLocalStorage(`${tag}-time-range`, '1y')
   const [unit, setUnit] = useLocalStorage<'usd' | 'eth'>(`${tag}-unit`, 'usd')
   const [scale, setScale] = useLocalStorage(`${tag}-scale`, 'lin')
@@ -80,7 +86,12 @@ export function TvlChart({ data, milestones, tag = 'summary' }: Props) {
       renderHoverContents={(data) => <ChartHover data={data} />}
     >
       <section className="flex flex-col gap-4">
-        <Header unit={unit} value={tvl} weeklyChange={tvlWeeklyChange} />
+        <Header
+          unit={unit}
+          value={tvl}
+          weeklyChange={tvlWeeklyChange}
+          headerContent={headerContent}
+        />
         <ChartTimeRangeControls
           value={timeRange}
           setValue={setTimeRange}
@@ -128,24 +139,31 @@ function ChartHover({ data }: { data: TvlChartPointData }) {
   )
 }
 
+const bridgesHeader = (unit: string) =>
+  `Sum of all funds locked on Ethereum converted to ${unit}`
+const scalingHeader = (unit: string) =>
+  `Sum of all canonically bridged, externally bridged, and natively minted tokens, converted to ${unit}`
+
 function Header({
   unit,
   value,
   weeklyChange,
+  headerContent,
 }: {
   unit: string
   value: number
   weeklyChange: string
+  headerContent: 'scaling' | 'bridges'
 }) {
   const loading = useChartLoading()
+  const heading = headerContent === 'scaling' ? scalingHeader : bridgesHeader
 
   return (
     <header className="flex flex-col justify-between text-base md:flex-row">
       <div>
         <h1 className="mb-1 text-3xl font-bold">Value Locked</h1>
         <p className="hidden text-gray-500 dark:text-gray-600 md:block">
-          Sum of all canonically bridged, externally bridged, and natively
-          minted tokens, converted to {unit.toUpperCase()}
+          {heading(unit.toUpperCase())}
         </p>
       </div>
       <div className="flex flex-row items-baseline gap-2 md:flex-col md:items-end md:gap-1">
