@@ -162,7 +162,7 @@ function Header({
     <header className="flex flex-col justify-between text-base md:flex-row">
       <div>
         <h1 className="mb-1 text-3xl font-bold">Value Locked</h1>
-        <p className="hidden text-gray-500 dark:text-gray-600 md:block">
+        <p className="hidden text-gray-500 md:block dark:text-gray-600">
           {heading(unit.toUpperCase())}
         </p>
       </div>
@@ -185,7 +185,7 @@ function Header({
           </>
         )}
       </div>
-      <hr className="mt-2 w-full border-gray-200 dark:border-zinc-700 md:hidden md:border-t" />
+      <hr className="mt-2 w-full border-gray-200 md:hidden md:border-t dark:border-zinc-700" />
     </header>
   )
 }
